@@ -1,2 +1,0 @@
-# HW12 JavaScript  
-
