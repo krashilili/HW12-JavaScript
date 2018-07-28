@@ -19,33 +19,59 @@ populateTable(data);
 // Listen to the event
 var filterButton = d3.select("#filter-btn");
 
+//
+// function filterFunction(record, category){
+//     var filteredData;
+//     switch(category){
+//         case 'date':
+//             return record => record.datetime === search);
+//             break;
+//         default:
+//             filteredData = data.filter(record => record.datetime === search);
+//             break;
+//     }
+//     return filteredData;
+// }
 
 filterButton.on('click', function () {
    //Prevent the page from refreshing
     d3.event.preventDefault();
 
-    // select the input element
-    var inputElement = d3.select('#datetime');
+    // select the input elements
+    var inputDate = d3.select('#datetime').node().value;
+    var inputCity = d3.select('#cityname').node().value;
+    var inputState = d3.select('#statename').node().value;
+    var inputCountry = d3.select('#countryname').node().value;
+    var inputShape = d3.select('#shapename').node().value;
 
-    // get the value property of the input element
-    var searchDate = inputElement.property("value");
+    console.log(`City: ${inputCity}, State: ${inputState}, Country: ${inputCountry}, Shape: ${inputShape}`);
 
-    // filter the data
-    var filteredRecord = data.filter(record => record.datetime===searchDate);
+    // filter the data by the inputs
 
-    if (searchDate === undefined || searchDate.length ==0){
+    var filteredRecord = data.filter(record =>   ( ((record.datetime===inputDate) || !inputDate)
+                                                && ((record.city === inputCity) || !inputCity)
+                                                && ((record.state === inputState) || !inputState)
+                                                && ((record.country === inputCountry) || !inputCountry)
+                                                && ((record.shape === inputShape) || !inputShape)
+        ));
+
+    // var filteredData = data.filter(function(record){
+    //     var filters;
+    //     if (inputDate){
+    //         filters = filterFunction()
+    //     }
+    // });
+
+    if (inputDate === undefined || inputDate.length ==0){
         // display the original data
         tbody.text("");
-        d3.selectAll('tr').remove();
         populateTable(tableData);
     }
-    else if(filteredRecord.length == 0 && searchDate.length != 0) {
+    else if(filteredRecord.length == 0 && inputDate.length != 0) {
         tbody.text("No matched record found in the database!");
     }
     else{
         tbody.text("");
-        // remove any existing rows
-        d3.selectAll('tr').remove();
         // console.log(filteredRecord);
         populateTable(filteredRecord);
     }
